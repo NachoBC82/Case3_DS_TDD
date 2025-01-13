@@ -43,6 +43,16 @@ namespace calculator.frontend.Controllers
             }
             return ret_isOdd;
         }
+
+        private string GetSqrt(double? raw_data)
+        {
+            var ret_sqrt = "Unknow";
+            if( raw_data != null)
+            {
+                ret_sqrt = raw_data.ToString();
+            }
+            return ret_sqrt;
+        }
         
         private Dictionary<string,string> ExecuteOperation(string number)
         {
@@ -52,6 +62,7 @@ namespace calculator.frontend.Controllers
             //Raw data for properties to check
             bool? raw_prime = null;
             bool? raw_odd = null;
+            double? raw_sqrt = null;
 
             // HTTP Client
             var clientHandler = new HttpClientHandler();
@@ -67,8 +78,11 @@ namespace calculator.frontend.Controllers
                 response.EnsureSuccessStatusCode();
                 var body = response.Content.ReadAsStringAsync().Result;
                 var json = JObject.Parse(body);
+
+                Console.WriteLine(json);
                 var prime = json["prime"];
                 var odd = json["odd"];
+                var sqrt = json["square_root"];
 
                 if (prime != null)
                 {
@@ -78,6 +92,10 @@ namespace calculator.frontend.Controllers
                 {
                     raw_odd = odd.Value<bool>();
                 }
+                if(sqrt != null)
+                {
+                    raw_sqrt = sqrt.Value<double>();
+                }
             }
 
             // Fill with value from backend
@@ -85,7 +103,8 @@ namespace calculator.frontend.Controllers
             result.Add("Prime",is_prime);
             var is_odd = GetIsOdd(raw_odd);
             result.Add("Odd",is_odd);
-           
+            var sqrt_result = GetSqrt(raw_sqrt);
+            result.Add("Sqrt", sqrt_result);           
 
             return result;
         }
@@ -96,6 +115,7 @@ namespace calculator.frontend.Controllers
             var result = ExecuteOperation(number);
             ViewBag.IsPrime = result["Prime"];
             ViewBag.IsOdd = result["Odd"];
+            ViewBag.Sqrt = result["Sqrt"];
             return View();
         }
     }

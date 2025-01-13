@@ -5,18 +5,55 @@ namespace calculator.frontend.Controllers
 {
     public class AttributeController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
         private string base_url =
             Environment.GetEnvironmentVariable("CALCULATOR_BACKEND_URL") ??
             "https://nachobc82-calculator-backend.azurewebsites.net";
         const string api = "api/Calculator";
-        private KeyValuePair<string,string> ExecuteOperation(string number)
+
+        public IActionResult Index()
         {
-            bool? raw_prime =  null;
+            return View();
+        }
+
+        public string GetIsPrime(bool? raw_data)
+        {
+            var ret_isPrime = "unknown";
+            if (raw_data != null && raw_data.Value)
+            {
+                ret_isPrime = "Yes";
+            }
+            else if (raw_data != null && !raw_data.Value)
+            {
+                ret_isPrime = "No";
+            }
+
+            return ret_isPrime;
+        }
+
+        public string GetIsOdd(bool? raw_data)
+        {
+            var ret_isOdd = "unknown";
+            if (raw_data != null && raw_data.Value)
+            {
+                ret_isOdd = "Yes";
+            }
+            else if (raw_data != null && !raw_data.Value)
+            {
+                ret_isOdd = "No";
+            }
+            return ret_isOdd;
+        }
+        
+        private Dictionary<string,string> ExecuteOperation(string number)
+        {
+            // List with result
+            Dictionary<string,string> result = new Dictionary<string, string>();
+
+            //Raw data for properties to check
+            bool? raw_prime = null;
             bool? raw_odd = null;
+
+            // HTTP Client
             var clientHandler = new HttpClientHandler();
             var client = new HttpClient(clientHandler);
             var url = $"{base_url}/api/Calculator/number_attribute?number={number}";
@@ -40,34 +77,23 @@ namespace calculator.frontend.Controllers
                 {
                     raw_odd = odd.Value<bool>();
                 }
+            }
 
-            }
-            var isPrime = "unknown";
-            if (raw_prime != null && raw_prime.Value)
-            {
-                isPrime = "Yes";
-            }
-            else if (raw_prime != null && !raw_prime.Value)
-            {
-                isPrime = "No";
-            }
-            var isOdd = "unknown";
-            if (raw_odd != null && raw_odd.Value)
-            {
-                isOdd = "Yes";
-            }
-            else if (raw_odd != null && !raw_odd.Value)
-            {
-                isOdd = "No";
-            }
-            return new KeyValuePair<string,string>(isPrime,isOdd);
+            // Fill with value from backend
+            var is_prime = GetIsPrime(raw_prime);
+            result.Add("Prime",is_prime);
+            var is_odd = GetIsOdd(raw_prime);
+            result.Add("Odd",is_odd);
+
+            return result;
         }
+        
         [HttpPost]
         public ActionResult Index(string number)
         {
             var result = ExecuteOperation(number);
-            ViewBag.IsPrime = result.Key;
-            ViewBag.IsOdd = result.Value;
+            ViewBag.IsPrime = result["Prime"];
+            ViewBag.IsOdd = result["Odd"];
             return View();
         }
     }

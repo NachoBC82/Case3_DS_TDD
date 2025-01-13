@@ -6,6 +6,10 @@ on:
   pull_request:
     branches:
     - dev
+  push:
+    branches:
+    - front-end
+    
 
 env:
   # Environment variables for the workflow

@@ -53,7 +53,7 @@ namespace CalculatorAPI.Controllers
         [HttpGet("square_root")]
         public ActionResult<double> SquareRoot([FromQuery] double number)
         {
-            var square_root = Math.Sqrt(number);
+            var square_root = NumberAttributter.SquareRoot(number);
             return Ok(new { result = square_root });
         }
     }

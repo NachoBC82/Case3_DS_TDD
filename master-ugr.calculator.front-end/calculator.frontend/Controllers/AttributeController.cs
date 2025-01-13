@@ -31,7 +31,7 @@ namespace calculator.frontend.Controllers
         }
 
         public string GetIsOdd(bool? raw_data)
-        {
+        {            
             var ret_isOdd = "unknown";
             if (raw_data != null && raw_data.Value)
             {
@@ -69,6 +69,7 @@ namespace calculator.frontend.Controllers
                 var json = JObject.Parse(body);
                 var prime = json["prime"];
                 var odd = json["odd"];
+
                 if (prime != null)
                 {
                     raw_prime = prime.Value<bool>();
@@ -82,8 +83,9 @@ namespace calculator.frontend.Controllers
             // Fill with value from backend
             var is_prime = GetIsPrime(raw_prime);
             result.Add("Prime",is_prime);
-            var is_odd = GetIsOdd(raw_prime);
+            var is_odd = GetIsOdd(raw_odd);
             result.Add("Odd",is_odd);
+           
 
             return result;
         }

@@ -45,8 +45,14 @@ namespace calculator.lib.test.steps
                 response.EnsureSuccessStatusCode();
                 var responseBody = response.Content.ReadAsStringAsync().Result;
                 var jsonDocument = JsonDocument.Parse(responseBody);
-                var result = jsonDocument.RootElement.GetProperty("result").GetDouble();
-                _scenarioContext.Add("result", result);
+                var result = jsonDocument.RootElement.GetProperty("result");
+
+                if (result.ValueKind == JsonValueKind.Number)
+                    _scenarioContext.Add("result", result.GetDouble());
+                else if (result.ValueKind == JsonValueKind.String){
+                    if (result.GetString() == "NaN")
+                        _scenarioContext.Add("result", double.NaN);
+                }
             }
         }
 
@@ -57,6 +63,7 @@ namespace calculator.lib.test.steps
             ApiCall("add");
         }
         [When(@"I divide first number by second number")]
+        [When(@"I divide both numbers")]
         public void WhenIDivideFirstNumberBySecondNumber()
         {
             ApiCall("divide");

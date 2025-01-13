@@ -47,14 +47,9 @@ namespace CalculatorAPI.Controllers
         {
             var is_prime = NumberAttributter.IsPrime(number);
             var is_odd = NumberAttributter.IsOdd(number);
-            return Ok(new { odd = is_odd, prime = is_prime });
-        }
+            var square_root = NumberAttributter.SquareRoot(number);
 
-        [HttpGet("square_root")]
-        public ActionResult<double> SquareRoot([FromQuery] double number)
-        {
-            var square_root = Math.Sqrt(number);
-            return Ok(new { result = square_root });
+            return Ok(new { odd = is_odd, prime = is_prime, square_root = square_root });
         }
     }
 }

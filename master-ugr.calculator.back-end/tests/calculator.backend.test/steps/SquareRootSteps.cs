@@ -28,13 +28,13 @@ namespace calculator.lib.test.steps
                 response.EnsureSuccessStatusCode();
                 var responseBody = response.Content.ReadAsStringAsync().Result;
                 var jsonDocument = JsonDocument.Parse(responseBody);
-                var result = jsonDocument.RootElement.GetProperty("result");
+                var result = jsonDocument.RootElement.GetProperty("square_root");
 
                 if (result.ValueKind == JsonValueKind.Number)
-                    _scenarioContext.Add("result", result.GetDouble());
+                    _scenarioContext.Add("square_root", result.GetDouble());
                 else if (result.ValueKind == JsonValueKind.String){
                     if (result.GetString() == "NaN")
-                        _scenarioContext.Add("result", double.NaN);
+                        _scenarioContext.Add("square_root", double.NaN);
                 }
             }
         }
@@ -48,13 +48,13 @@ namespace calculator.lib.test.steps
         [When(@"the square root is calculated")]
         public void WhenTheSquareRootIsCalculated()
         {
-            ApiCall("square_root");
+            ApiCall("number_attribute");
         }
 
         [Then(@"the square root result should be (.*)")]
         public void ThenTheSquareRootResultShouldBe(double expectedResult)
         {
-            var result = _scenarioContext.Get<double>("result");
+            var result = _scenarioContext.Get<double>("square_root");
             Assert.Equal(expectedResult, result);
         }
     }

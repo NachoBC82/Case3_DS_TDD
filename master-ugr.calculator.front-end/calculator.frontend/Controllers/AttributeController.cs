@@ -7,7 +7,7 @@ namespace calculator.frontend.Controllers
     {
         private string base_url =
             Environment.GetEnvironmentVariable("CALCULATOR_BACKEND_URL") ??
-            "https://nachobc82-calculator-backend.azurewebsites.net";
+            "https://nachobc82-calculator-backend-uat.azurewebsites.net";
         const string api = "api/Calculator";
 
         public IActionResult Index()
@@ -79,7 +79,6 @@ namespace calculator.frontend.Controllers
                 var body = response.Content.ReadAsStringAsync().Result;
                 var json = JObject.Parse(body);
 
-                Console.WriteLine(json);
                 var prime = json["prime"];
                 var odd = json["odd"];
                 var sqrt = json["square_root"];

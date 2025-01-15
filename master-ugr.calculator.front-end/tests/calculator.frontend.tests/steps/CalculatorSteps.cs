@@ -61,6 +61,7 @@ namespace calculator.frontend.tests.steps
 
 
         [When(@"I divide first number by second number")]
+        [When(@"I divide both numbers")]
         public async Task WhenIDivideFirstNumberBySecondNumber()
         {
             var page = (IPage)_scenarioContext["page"];

@@ -194,6 +194,7 @@ jobs:
             CALCULATOR_FRONTEND_URL : ${{ env.CALCULATOR_FRONTEND_URL_PROD }}
    Analysis:
     runs-on: ubuntu-latest
+    needs: [smoke_test]
     steps:
       - name: Analyze with SonarCloud
         # You can pin the exact commit or the version.

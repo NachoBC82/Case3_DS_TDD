@@ -167,7 +167,7 @@ jobs:
           with:
               app-name: ${{ env.AZURE_WEBAPP_NAME_FRONTEND_PROD }}
               package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH_FRONTEND }}
-              publish-profile: ${{ secrets.MASTER_UGR_CI_FRONTEND_PROD_SPN }}
+              publish-profile: ${{ secrets.MASTER_UGR_CI_FRONTEND_PROD_SPN }}   
    smoke_tests:
      runs-on: ubuntu-latest
      needs: [deploy_backend,deploy_frontend]

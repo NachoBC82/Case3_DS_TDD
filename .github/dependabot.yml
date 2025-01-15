@@ -5,6 +5,12 @@
 
 version: 2
 updates:
+  - package-ecosystem: "nuget" # Back
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    target-branch: "main"
+    
   - package-ecosystem: "github-actions" # See documentation for possible values
     directory: "/" # Location of package manifests
     target-branch: "dev"

@@ -40,8 +40,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Restore dependencies for back-end
-        run: dotnet restore ${{ env.WORKING_DIRECTORY_BACKEND }}
+      - uses: actions/checkout@v4
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+         dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+      - name: Restore Back-End
+        run: dotnet restore "${{ env.WORKING_DIRECTORY_BACKEND }}"
       - name: Analyze back-end
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -60,8 +65,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-     - name: Restore dependencies for front-end
-       run: dotnet restore ${{ env.WORKING_DIRECTORY_FRONTEND }}
+     - uses: actions/checkout@v4
+     - name: Setup .NET SDK
+       uses: actions/setup-dotnet@v4
+       with:
+        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+     - name: Restore Front-End
+       run: dotnet restore "${{ env.WORKING_DIRECTORY_FRONTEND }}"
      - name: Analyze front-end
        env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

@@ -6,14 +6,19 @@
 version: 2
 updates:
   - package-ecosystem: "nuget"
+    directory: "/master-ugr.calculator.front-end/"
+    schedule:
+      interval: "weekly"
+    target-branch: "front-end"
+    
+  - package-ecosystem: "nuget"
     directory: "/master-ugr.calculator.back-end/"
     schedule:
       interval: "weekly"
     target-branch: "back-end"
     
-  - package-ecosystem: "github-actions" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: "github-actions"
+    directory: "/"
     target-branch: "dev"
     schedule:
       interval: "weekly"
-      

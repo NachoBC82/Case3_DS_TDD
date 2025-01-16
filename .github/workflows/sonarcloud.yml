@@ -6,49 +6,49 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 env:
+    # Front-end Domain    
+    AZURE_WEBAPP_NAME_FRONTEND_UAT: NachoBC82-calculator-frontend-uat
+    AZURE_WEBAPP_NAME_FRONTEND_PROD: NachoBC82-calculator-frontend
+    AZURE_WEBAPP_PACKAGE_PATH_FRONTEND: master-ugr.calculator.front-end/calculator.frontend/publish
+    WORKING_DIRECTORY_FRONTEND: master-ugr.calculator.front-end/calculator.frontend
+    CALCULATOR_FRONTEND_URL_UAT: https://NachoBC82-calculator-frontend-uat.azurewebsites.net
+    TEST_PATH_FRONTEND: master-ugr.calculator.front-end/tests/calculator.frontend.tests
+    CALCULATOR_FRONTEND_URL_PROD: https://NachoBC82-calculator-frontend.azurewebsites.net/
+    # Back-end Domain
+    AZURE_WEBAPP_PACKAGE_PATH_BACKEND: master-ugr.calculator.back-end/calculator.backend/publish
+    WORKING_DIRECTORY_BACKEND: master-ugr.calculator.back-end/calculator.backend
+    
     # Sonarcloud Domain
     SONARCLOUD_NAME: NachoBC82_Case3_DS_TDD
     SONARCLOUD_ORGANIZATION: nachobc82
     SONARCLOUD_HOST_URL: https://sonarcloud.io
 
-    CONFIGURATION: Release
-    DOTNET_CORE_VERSION: 8.0.x
-
 jobs:
-  build:
-    name: Build and analyze
+  backend-analysis:
+    name: Back-end analysis
     runs-on: ubuntu-latest
     steps:
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '${{ env.DOTNET_CORE_VERSION }}'  # Cambia según la versión de .NET que uses
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Desactivar clones superficiales para un análisis más relevante
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v4
+          fetch-depth: 0
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
         with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache SonarCloud scanner
-        id: cache-sonar-scanner
-        uses: actions/cache@v4
-        with:
-          path: ./.sonar/scanner
-          key: ${{ runner.os }}-sonar-scanner
-          restore-keys: ${{ runner.os }}-sonar-scanner
-      - name: Install SonarCloud scanner
-        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+          dotnet-version: '${{ env.DOTNET_CORE_VERSION }}'
+      - name: Install SonarCloud scanner for back-end
         run: |
           mkdir -p ./.sonar/scanner
           dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
-      - name: Build and analyze
+      - name: Analyze back-end
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          ./.sonar/scanner/dotnet-sonarscanner begin /k:"${{ env.SONARCLOUD_NAME }}" /o:"${{ env.SONARCLOUD_ORGANIZATION }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ env.SONARCLOUD_HOST_URL }}"
-          dotnet build
+          ./.sonar/scanner/dotnet-sonarscanner begin \
+            /k:"${{ env.SONARCLOUD_NAME }}" \
+            /o:"${{ env.SONARCLOUD_ORGANIZATION }}" \
+            /d:sonar.sources="${{ env.WORKING_DIRECTORY_BACKEND }}" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.host.url="${{ env.SONARCLOUD_HOST_URL }}"
+          run: dotnet build "${{ env.WORKING_DIRECTORY_BACKEND }}" --configuration ${{ env.CONFIGURATION }} --no-restore
           ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"

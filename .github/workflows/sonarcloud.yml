@@ -50,5 +50,6 @@ jobs:
             /d:sonar.sources="${{ env.WORKING_DIRECTORY_BACKEND }}" \
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.host.url="${{ env.SONARCLOUD_HOST_URL }}"
-          run: dotnet build "${{ env.WORKING_DIRECTORY_BACKEND }}" --configuration ${{ env.CONFIGURATION }} --no-restore
-          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          dotnet build ${{ env.WORKING_DIRECTORY_BACKEND }} --configuration ${{ env.CONFIGURATION }} --no-restore
+          ./.sonar/scanner/dotnet-sonarscanner end \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}"

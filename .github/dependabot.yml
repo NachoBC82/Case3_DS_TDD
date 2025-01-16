@@ -5,6 +5,12 @@
 
 version: 2
 updates:
+  - package-ecosystem: "nuget"
+    directory: "/master-ugr.calculator.back-end/"
+    schedule:
+      interval: "weekly"
+    target-branch: "back-end"
+    
   - package-ecosystem: "github-actions" # See documentation for possible values
     directory: "/" # Location of package manifests
     target-branch: "dev"
